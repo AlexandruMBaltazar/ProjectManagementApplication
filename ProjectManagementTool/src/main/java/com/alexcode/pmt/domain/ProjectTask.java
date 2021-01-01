@@ -1,5 +1,7 @@
 package com.alexcode.pmt.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -18,26 +20,18 @@ public class ProjectTask {
     private String status;
     private Integer priority;
     private Date dueDate;
-    //ManyToOne with Backlog
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "backlog_id", updatable = false, nullable = false)
+    @JsonIgnore
+    private Backlog backlog;
+
     @Column(updatable = false)
     private String projectIdentifier;
     private Date created_At;
     private Date updated_At;
 
     public ProjectTask() {
-    }
-
-    public ProjectTask(Long id, String projectSequence, @NotBlank(message = "Please include a project summary") String summary, String acceptanceCriteria, String status, Integer priority, Date dueDate, String projectIdentifier, Date created_At, Date updated_At) {
-        this.id = id;
-        this.projectSequence = projectSequence;
-        this.summary = summary;
-        this.acceptanceCriteria = acceptanceCriteria;
-        this.status = status;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.projectIdentifier = projectIdentifier;
-        this.created_At = created_At;
-        this.updated_At = updated_At;
     }
 
     public Long getId() {
@@ -118,6 +112,14 @@ public class ProjectTask {
 
     public void setUpdated_At(Date updated_At) {
         this.updated_At = updated_At;
+    }
+
+    public Backlog getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(Backlog backlog) {
+        this.backlog = backlog;
     }
 
     @PrePersist
