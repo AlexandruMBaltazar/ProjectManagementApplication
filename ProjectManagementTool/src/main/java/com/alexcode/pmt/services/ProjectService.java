@@ -2,9 +2,11 @@ package com.alexcode.pmt.services;
 
 import com.alexcode.pmt.domain.Backlog;
 import com.alexcode.pmt.domain.Project;
+import com.alexcode.pmt.domain.User;
 import com.alexcode.pmt.exceptions.ProjectIdException;
 import com.alexcode.pmt.repositories.BacklogRepository;
 import com.alexcode.pmt.repositories.ProjectRepository;
+import com.alexcode.pmt.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +15,22 @@ public class ProjectService {
 
     private ProjectRepository projectRepository;
     private BacklogRepository backlogRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, BacklogRepository backlogRepository) {
+    public ProjectService(ProjectRepository projectRepository, BacklogRepository backlogRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.backlogRepository = backlogRepository;
+        this.userRepository = userRepository;
     }
 
-    public Project saveOrUpdateProject(Project project) {
+    public Project saveOrUpdateProject(Project project, String username) {
         try {
+
+            User user = userRepository.findByUsername(username);
+
+            project.setUser(user);
+            project.setProjectLeader(user.getUsername());
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
 
             if (project.getId() == null) {
