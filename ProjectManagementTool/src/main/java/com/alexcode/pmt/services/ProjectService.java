@@ -51,27 +51,25 @@ public class ProjectService {
         }
     }
 
-    public Project findProjectByIdentifier(String projectId) {
+    public Project findProjectByIdentifier(String projectId, String username) {
         Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
 
         if (project == null) {
             throw new ProjectIdException("Project ID '"+projectId+"' does not exist");
         }
 
+        if (!project.getProjectLeader().equals(username)) {
+            throw new ProjectIdException("Project ID '"+projectId+"' does not exist");
+        }
+
         return project;
     }
 
-    public Iterable<Project> findAllProjects() {
-        return projectRepository.findAll();
+    public Iterable<Project> findAllProjects(String username) {
+        return projectRepository.findAllByProjectLeader(username);
     }
 
-    public void deleteProjectByIdentifier(String projectId) {
-        Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
-
-        if (project == null) {
-            throw new ProjectIdException("Project with ID '"+projectId+"' can not be deleted");
-        }
-
-        projectRepository.delete(project);
+    public void deleteProjectByIdentifier(String projectId, String username) {
+        projectRepository.delete(findProjectByIdentifier(projectId, username));
     }
 }
