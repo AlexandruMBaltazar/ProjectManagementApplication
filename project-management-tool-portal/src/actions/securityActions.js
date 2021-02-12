@@ -1,5 +1,5 @@
 import axios from 'axios';
-import setJWTHeader from '../securityUtils/SetJWTHeader';
+import setJWTHeader from '../securityUtils/setJWTHeader';
 import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER } from './types';
 
@@ -55,3 +55,14 @@ export const login = loginRequest => async dispatch => {
     }
 
 };
+
+export const logout = () => dispatch => {
+    localStorage.removeItem("jwtToken");
+
+    setJWTHeader(false);
+
+    dispatch({
+        type: SET_CURRENT_USER,
+        payload: {}
+    });
+}
