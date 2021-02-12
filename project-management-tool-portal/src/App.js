@@ -34,7 +34,7 @@ if (jwtToken) {
 
   if (decoded.exp < currentTime) {
     store.dispatch(logout());
-    window.location.href="/";
+    window.location.href="/"
   }
 
 }
